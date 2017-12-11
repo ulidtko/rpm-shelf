@@ -1,5 +1,5 @@
 Name:           openresty-nginx
-Version:        0.1
+Version:        4.2
 Release:        VIS0
 Summary:        Visonic build of OpenResty Nginx with Lua scripting
 Group:          System Environment/Daemons
@@ -11,7 +11,7 @@ Requires: pcre zlib openssl
 %define version_nginx          1.13.4
 %define version_ndk            0.3.0
 %define version_luajit         2.1.0-beta3
-%define version_lua_mod        0.10.10
+%define version_lua_mod        0.10.12rc1
 %define version_openssl        1.0.2l
 
 %define version_lrucache 0.07
@@ -38,7 +38,7 @@ Source18: https://github.com/openresty/lua-cjson/archive/%{version_cjson}.tar.gz
 %description
 Turning Nginx into a Full-Fledged Scriptable Web Platform
 
-%define prefix /usr/local
+%define prefix /usr
 %define make make --no-print-dir
 
 #------------------------------------------------------------------------------#
@@ -62,6 +62,12 @@ Turning Nginx into a Full-Fledged Scriptable Web Platform
 #-- LuaJIT is built once, installed twice: once to stage, once more into the RPM
 export LUAJIT_STAGING=%{_builddir}/luajit-staging
 
+#-- doh
+%define fixup_prefix(m) \
+    sed -i 's|PREFIX *= */usr/local|PREFIX=%{prefix}|' %1
+
+%fixup_prefix %{_builddir}/LuaJIT-%{version_luajit}/Makefile
+
 %make -C %{_builddir}/LuaJIT-%{version_luajit} \
     DESTDIR=$LUAJIT_STAGING \
     install
@@ -72,9 +78,10 @@ export LUAJIT_INC=$LUAJIT_STAGING%{prefix}/include/luajit-2.1
 ./configure \
     --prefix=%{prefix} \
     --build=%{release} \
-    --conf-path=/usr/local/etc/nginx.stock/nginx.conf \
+    --conf-path=/etc/nginx.stock/nginx.conf \
     --http-log-path=/var/log/nginx/access.log \
     --error-log-path=/var/log/nginx/error.log \
+    --pid-path=/run/nginx.pid \
     --with-ld-opt="-Wl,-rpath,%{prefix}/lib" \
     --with-http_ssl_module \
     --add-module=%{_builddir}/ngx_devel_kit-%{version_ndk} \
@@ -96,6 +103,8 @@ cd %{buildroot}
     install
 ln -s luajit-%{version_luajit} %{buildroot}%{prefix}/bin/luajit
 
+%fixup_prefix %{_builddir}/lua-cjson-%{version_cjson}/Makefile
+export PREFIX=%{prefix}
 export DESTDIR=%{buildroot}
 %make -C %{_builddir}/nginx-%{version_nginx}                             install
 %make -C %{_builddir}/lua-resty-lrucache-%{version_lrucache}             install
@@ -112,9 +121,9 @@ mkdir -p %{buildroot}/var/log/nginx
 %{prefix}/lib/pkgconfig/luajit.pc
 %{prefix}/include/luajit*
 %{prefix}/share/luajit*/jit/*.lua
-%{prefix}/share/man/man1/luajit.1
+%{prefix}/share/man/man1/luajit.1.gz
 
-%{prefix}/etc/nginx.stock
+/etc/nginx.stock
 %{prefix}/sbin/nginx
 %{prefix}/html
 %dir /var/log/nginx
@@ -127,5 +136,8 @@ mkdir -p %{buildroot}/var/log/nginx
 
 #------------------------------------------------------------------------------#
 %changelog
+* Mon Dec 11 2017 Max Ivanov <ulidtko@gmail.com> 4.2-VIS0
+- Configs path, prefix and pidfile location fixed. Lua-mod v0.10.12rc1
+
 * Wed Nov 28 2017 Max Ivanov <ulidtko@gmail.com> 0.1-VIS0
 - Initial RPM packaging written from scratch.
