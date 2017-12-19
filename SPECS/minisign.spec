@@ -2,7 +2,7 @@
 Summary:        A dead simple tool to sign files and verify signatures.
 Name:           minisign
 Version:        0.7
-Release:        VIS0.1
+Release:        VIS0.2
 License:        ISC
 Vendor:         Visonic
 Url:            https://jedisct1.github.io/minisign/
@@ -101,6 +101,9 @@ make DESTDIR=%{buildroot} install
 
 
 %changelog
+* Tue Dec 19 2017 Max <ulidtko@gmail.com> - 0.7-VIS0.2
+  Rebuild against newer libsodium 1.0.16
+
 * Thu Dec 14 2017 Max <ulidtko@gmail.com> - 0.7-VIS0.1
   Fix failure on keypair generation when secret key path
   is specified relative to CWD (e.g. -s new.key)
