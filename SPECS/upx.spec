@@ -1,8 +1,9 @@
 Name:           upx
 Version:        3.94
-Release:        VIS0.1
-Summary:        UPX - the Ultimate Packer for eXecutables
-License:        GPL (with executable stub exception)
+Release:        VIS0.2
+Summary:        the Ultimate Packer for eXecutables
+License:        GPL-2.0+ WITH binary-stub-exception
+Group:          Development/Tools/Other
 
 URL:            https://upx.github.io/
 
@@ -11,6 +12,8 @@ URL:            https://upx.github.io/
 Source0:        https://github.com/upx/upx/archive/v%{version}.tar.gz#save-as/%{name}-%{version}.tar.gz
 Source2:        https://github.com/upx/upx-lzma-sdk/archive/v%{version}.tar.gz#save-as/upx-lzma-sdk-%{version}.tar.gz
 Source1:        http://www.oberhumer.com/opensource/ucl/download/ucl-%{ucl_ver}.tar.gz
+
+Patch0:         00-ucl-static-assert.patch
 
 BuildRequires: gcc-c++
 #BuildRequires: clang
@@ -21,6 +24,7 @@ BuildRequires:  zlib-devel
 AutoReq: yes
 
 %define make make %{?_smp_mflags} --no-print-dir
+%define _pkgdocdir %{_docdir}/%{name}-%{version}
 
 %description
 UPX is a free, portable, extendable, high-performance executable packer
@@ -31,10 +35,13 @@ for several executable formats.
 %setup -b 1
 %setup -b 2
 
+cd %{_builddir}/ucl-%{ucl_ver}
+%patch0 -p1
+
 %build
 
 cd %{_builddir}/ucl-%{ucl_ver}
-%configure && %make
+%configure && %make || exit 1
 
 cd %{_builddir}/upx-%{version}
 rmdir   src/lzma-sdk && \
@@ -52,9 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %make_install -C %{_builddir}/ucl-%{ucl_ver}
 
-install -D -m755 %{_builddir}/upx-%{version}/src/upx.out %{buildroot}%{_bindir}/upx
-install -d %{buildroot}%{_pkgdocdir}
-install -t %{buildroot}%{_pkgdocdir} \
+install -m755 -D %{_builddir}/upx-%{version}/src/upx.out %{buildroot}%{_bindir}/upx
+install -m755 -d %{buildroot}%{_pkgdocdir}
+install -m644 -t %{buildroot}%{_pkgdocdir} \
     BUGS \
     COPYING \
     LICENSE \
@@ -69,8 +76,8 @@ install -t %{buildroot}%{_pkgdocdir} \
     doc/loader.txt \
     doc/selinux.txt \
     ;
-install -d %{buildroot}%{_mandir}
-install -t %{buildroot}%{_mandir} \
+install -m755 -d %{buildroot}%{_mandir}
+install -m644 -t %{buildroot}%{_mandir} \
     doc/upx.1
 
 %files
@@ -82,6 +89,9 @@ install -t %{buildroot}%{_mandir} \
 
 
 %changelog
+
+* Tue Jan 2 2018 Max <ulidtko@gmail.com> 3.94-VIS0.2
+- UCL static assert patch added; lint fixed, can build on OpenSUSE now.
 
 * Tue Dec 26 2017 Max <ulidtko@gmail.com> 3.94-VIS0.1
 - Initial RPM packaging written from scratch.

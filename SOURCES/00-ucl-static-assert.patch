@@ -1,0 +1,44 @@
+On OpenSUSE Tumbleweed, with GCC 7.2, version string:
+
+    g++ (SUSE Linux) 7.2.1 20171020 [gcc-7-branch revision 253932]
+
+... a "variably modified array at file scope" compile error when building UCL occurs, like this:
+
+    configure:31432: checking whether your compiler passes the ACC conformance test
+    configure:31477: gcc -c -fmessage-length=0 -grecord-gcc-switches -O2 -Wall -D_FORTIFY_SOURCE=2 -fstack-protector-strong -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -I. -I./acc  co
+    nftest.c >&5
+    In file included from acc/acc.h:78:0,
+                     from conftest.c:114:
+    acc/acc_defs.h:97:59: error: variably modified '__acc_cta' at file scope
+     #    define ACC_COMPILE_TIME_ASSERT_HEADER(e)  extern int __acc_cta[1-2*!(e)];
+                                                               ^
+    conftest.c:117:33: note: in expansion of macro 'ACC_COMPILE_TIME_ASSERT_HEADER'
+     #define ACCCHK_ASSERT(expr)     ACC_COMPILE_TIME_ASSERT_HEADER(expr)
+                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    acc/acc_chk.ch:207:5: note: in expansion of macro 'ACCCHK_ASSERT'
+         ACCCHK_ASSERT((1   << (8*SIZEOF_INT-1)) < 0)
+         ^~~~~~~~~~~~~
+
+For some reason, `ACCCHK_ASSERT((int)0x80000000 < 0)` doesn't trigger the error above
+on this compiler; but the more elaborate expression from the source does.
+Perhaps the array-size-const-ness check fires too soon on this GCC,
+before all integral-constant-expressions are completely evaluated.
+
+This patch fixes the error by changing the plainc-static-assert-emulation approach,
+perusing a static assert form "inspired by" the one used in the Linux kernel.
+Additional levels of nesting are necessary for __COUNTER__-based uniqueness.
+
+diff -ur ucl-1.03/acc/acc_defs.h ucl-1.03.patched/acc/acc_defs.h
+--- ucl-1.03/acc/acc_defs.h	2004-07-20 02:01:47.000000000 +0300
++++ ucl-1.03.patched/acc/acc_defs.h	2018-01-02 16:14:27.432797094 +0200
+@@ -94,7 +94,9 @@
+ #  elif (ACC_CC_TURBOC && (__TURBOC__ == 0x0295))
+ #    define ACC_COMPILE_TIME_ASSERT_HEADER(e)  extern int __acc_cta[1-!(e)];
+ #  else
+-#    define ACC_COMPILE_TIME_ASSERT_HEADER(e)  extern int __acc_cta[1-2*!(e)];
++#    define ACC_COMPILE_TIME_ASSERT_HEADER(e)  ACC_COMPILE_TIME_ASSERT_HEADER_2(e, __COUNTER__);
++#    define ACC_COMPILE_TIME_ASSERT_HEADER_2(e, cnt) ACC_COMPILE_TIME_ASSERT_HEADER_3(e, cnt)
++#    define ACC_COMPILE_TIME_ASSERT_HEADER_3(e, cnt) typedef struct { int:-!(e); } __acc_cta ## cnt
+ #  endif
+ #endif
+
