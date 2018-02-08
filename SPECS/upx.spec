@@ -1,7 +1,7 @@
 Name:           upx
 Version:        3.94
-Release:        VIS0.2
-Summary:        the Ultimate Packer for eXecutables
+Release:        VIS0.3
+Summary:        The Ultimate Packer for eXecutables
 License:        GPL-2.0+ WITH binary-stub-exception
 Group:          Development/Tools/Other
 
@@ -57,7 +57,7 @@ rmdir   src/lzma-sdk && \
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%make_install -C %{_builddir}/ucl-%{ucl_ver}
+#%make_install -C %{_builddir}/ucl-%{ucl_ver}
 
 install -m755 -D %{_builddir}/upx-%{version}/src/upx.out %{buildroot}%{_bindir}/upx
 install -m755 -d %{buildroot}%{_pkgdocdir}
@@ -82,13 +82,15 @@ install -m644 -t %{buildroot}%{_mandir} \
 
 %files
 %{_bindir}/upx
-%{_includedir}/ucl/
-%{_libdir}/libucl*
+#%{_includedir}/ucl/
+#%{_libdir}/libucl*
 %doc %{_mandir}/upx.1*
 %doc %{_pkgdocdir}/
 
 
 %changelog
+* Wed Jan 3 2018 Max <ulidtko@gmail.com> 3.94-VIS0.3
+- RPMlint fixed (except for the licensing exception). UCL binaries not packaged now.
 
 * Tue Jan 2 2018 Max <ulidtko@gmail.com> 3.94-VIS0.2
 - UCL static assert patch added; lint fixed, can build on OpenSUSE now.
