@@ -5,15 +5,15 @@ version: 2
 jobs:
   build:
     docker:
-      - image: opensuse:tumbleweed
+      - image: centos:latest
     steps:
       - run:
           name: Install build-deps
-          command: zypper install -y rpmdevtools rpmbuild
+          command: yum --noplugins install -y rpmdevtools yum-utils; yum clean all
       - checkout
       - run:
-          name: Greeting
-          command: echo Hello CircleCI
+          name: Fetch source tarballs
+          command: spectool -g SPECS/upx.spec
       - run:
-          name: echo $CLOCK
-          command: date
+          name: Start rpmbuild
+          command: rpmbuild --define "_topdir $PWD" -bs SPECS/upx.spec
