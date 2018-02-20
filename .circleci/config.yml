@@ -1,0 +1,20 @@
+
+#-- https://circleci.com --#
+
+version: 2
+jobs:
+  commit-trigger:
+    docker:
+      - image: opensuse:tumbleweed
+
+    steps:
+      - run:
+          name: Install build-deps
+          command: zypper install -y rpmdevtools rpmbuild
+      - checkout
+      - run:
+          name: Greeting
+          command: echo Hello CircleCI
+      - run:
+          name: echo $CLOCK
+          command: date
