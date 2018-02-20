@@ -3,7 +3,7 @@
 
 version: 2
 jobs:
-  commit-trigger:
+  build:
     docker:
       - image: opensuse:tumbleweed
 
