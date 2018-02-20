@@ -9,11 +9,21 @@ jobs:
     steps:
       - run:
           name: Install build-deps
-          command: yum --noplugins install -y rpmdevtools yum-utils; yum clean all
+          command: |
+            yum --noplugins install -y rpmdevtools yum-utils
+            yum clean all
+            go get github.com/tcnksm/ghr
       - checkout
       - run:
           name: Fetch source tarballs
           command: (mkdir -p SOURCES && cd SOURCES && spectool -g ../SPECS/upx.spec)
       - run:
-          name: Start rpmbuild
+          name: rpmbuild (source)
           command: rpmbuild --define "_topdir $PWD" -bs SPECS/upx.spec
+      - run:
+          name: Publish to GitHub
+          command: |
+            ghr -t $GITHUB_TOKEN \
+                -u $CIRCLE_PROJECT_USERNAME \
+                -r $CIRCLE_PROJECT_REPONAME \
+                SRPMS/*.src.rpm
