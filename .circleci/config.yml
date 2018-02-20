@@ -10,7 +10,7 @@ jobs:
       - run:
           name: Install build-deps
           command: |
-            yum --noplugins install -y rpmdevtools yum-utils
+            yum --noplugins install -y rpmdevtools yum-utils golang
             yum clean all
             go get github.com/tcnksm/ghr
       - checkout
