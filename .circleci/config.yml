@@ -12,6 +12,7 @@ jobs:
           command: |
             yum --noplugins install -y rpmdevtools yum-utils golang git
             yum clean all
+            export GOBIN=/usr/local/bin
             go get github.com/tcnksm/ghr
       - checkout
       - run:
@@ -26,4 +27,5 @@ jobs:
             ghr -t $GITHUB_TOKEN \
                 -u $CIRCLE_PROJECT_USERNAME \
                 -r $CIRCLE_PROJECT_REPONAME \
-                SRPMS/*.src.rpm
+                -prerelease \
+                0.1 SRPMS/
