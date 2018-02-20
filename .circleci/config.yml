@@ -6,7 +6,6 @@ jobs:
   build:
     docker:
       - image: opensuse:tumbleweed
-
     steps:
       - run:
           name: Install build-deps
