@@ -17,15 +17,24 @@ jobs:
       - run:
           name: Fetch source tarballs
           command: |
-            (mkdir -p SOURCES; cd SOURCES; spectool -g ../SPECS/upx.spec)
+            (mkdir -p SOURCES; cd SOURCES;
+              for spec in ../SPECS/*.spec; do
+                spectool -g $spec;
+              done)
 
       - run:
           name: Install build-deps
-          command: yum-builddep -y SPECS/upx.spec
+          command: |
+            for spec in SPECS/*.spec; do
+              yum-builddep -y $spec;
+            done
 
       - run:
           name: rpmbuild
-          command: rpmbuild --define "_topdir $PWD" -ba SPECS/upx.spec
+          command: |
+            for spec in SPECS/*.spec; do
+              rpmbuild --define "_topdir $PWD" -ba $spec
+            done
 
       - persist_to_workspace:
           root: .
@@ -50,7 +59,7 @@ jobs:
       - run:
           name: PackageCloud upload
           command: |
-            package_cloud push rpm-shelf/main/el/7 RPMS/x86_64/upx-*.rpm
+            package_cloud push rpm-shelf/main/el/7 RPMS/x86_64/*.rpm
 
 workflows:
   version: 2
