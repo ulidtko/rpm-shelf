@@ -30,7 +30,7 @@ jobs:
       - run:
           name: rpmbuild (binary)
           command: |
-            rpmbuild --define "_topdir $PWD" -bb SPECS/upx-*.src.rpm
+            rpmbuild --define "_topdir $PWD" -bb SPECS/upx.spec
 
   publish:
     <<: *globals
