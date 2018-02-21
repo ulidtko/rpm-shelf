@@ -47,10 +47,10 @@ jobs:
 
 workflows:
   version: 2
-    all-there-is-to-it:
-      jobs:
-        - build
-        - publish:
-            requires:
-              build
+  all-there-is-to-it:
+    jobs:
+      - build
+      - publish:
+          requires:
+            build
 
