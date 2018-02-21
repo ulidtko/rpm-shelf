@@ -20,17 +20,12 @@ jobs:
             (mkdir -p SOURCES; cd SOURCES; spectool -g ../SPECS/upx.spec)
 
       - run:
-          name: rpmbuild (source)
-          command: rpmbuild --define "_topdir $PWD" -bs SPECS/upx.spec
+          name: Install build-deps
+          command: yum-builddep -y SPECS/upx.spec
 
       - run:
-          name: install build-deps
-          command: rpm -qp --requires SRPMS/upx-*.src.rpm | xargs -d\\n yum --noplugins install -y
-
-      - run:
-          name: rpmbuild (binary)
-          command: |
-            rpmbuild --define "_topdir $PWD" -bb SPECS/upx.spec
+          name: rpmbuild
+          command: rpmbuild --define "_topdir $PWD" -ba SPECS/upx.spec
 
       - persist_to_workspace:
           root: .
