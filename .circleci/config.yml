@@ -5,22 +5,34 @@ version: 2
 jobs:
   build:
     docker:
-      - image: centos:latest
+      - image: centos:7.3.1611
     steps:
       - run:
           name: Install build-deps
           command: |
-            yum --noplugins install -y rpmdevtools yum-utils golang git
+            yum --noplugins install -y \
+                rpmdevtools yum-utils \
+                golang git \
+                rubygems \
+                ;
             yum clean all
+
             export GOBIN=/usr/local/bin
             go get github.com/tcnksm/ghr
+
+            gem install package_cloud
+
       - checkout
+
       - run:
           name: Fetch source tarballs
-          command: (mkdir -p SOURCES && cd SOURCES && spectool -g ../SPECS/upx.spec)
+          command: |
+            (mkdir -p SOURCES; cd SOURCES; spectool -g ../SPECS/upx.spec)
+
       - run:
           name: rpmbuild (source)
           command: rpmbuild --define "_topdir $PWD" -bs SPECS/upx.spec
+
       - run:
           name: Publish to GitHub
           command: |
@@ -28,4 +40,15 @@ jobs:
                 -u $CIRCLE_PROJECT_USERNAME \
                 -r $CIRCLE_PROJECT_REPONAME \
                 -prerelease \
+                -replace \
                 0.1 SRPMS/
+
+      - run:
+          name: rpmbuild (binary)
+          command: |
+            rpmbuild --define "_topdir $PWD" --rebuild SPECS/upx-*.src.rpm
+
+      - run:
+          name: PackageCloud upload
+          command: |
+            package_cloud push rpm-shelf/main/el/7 RPMS/x86_64/upx-*.rpm
