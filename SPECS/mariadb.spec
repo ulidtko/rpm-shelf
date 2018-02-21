@@ -8,12 +8,12 @@ Group:          Applications/Databases
 License:        GPL2
 URL:            http://mariadb.org
 Source0:        http://archive.mariadb.org/%{name}-%{version}/source/%{name}-%{version}.tar.gz
-Source1:        mariadb/my.cnf
-Source15:       mariadb/mariadb.service
-Source16:       mariadb/mariadb.target
-Source17:       mariadb/mysql-systemd-helper
-Source18:       mariadb/mysql.logrotate.conf
-Source50:       mariadb/mariadb-wait-ready
+Source1:        my.cnf
+Source15:       mariadb.service
+Source16:       mariadb.target
+Source17:       mysql-systemd-helper
+Source18:       mysql.logrotate.conf
+Source50:       mariadb-wait-ready
 
 BuildRequires:  jemalloc-devel, xz-devel, lzo-devel, readline-devel, libaio-devel, perl-Test-Simple
 AutoReq: on
@@ -70,18 +70,18 @@ mkdir -vp %{buildroot}/var/lib/mysql/tmp
 mkdir -vp %{buildroot}/var/log/mysql
 
 # Package config
-install -D -m 644 %{_sourcedir}/mariadb/my.cnf '%{buildroot}'/etc/my.cnf
+install -D -m 644 %{_sourcedir}/my.cnf '%{buildroot}'/etc/my.cnf
 
 # Overwrite stock logrotate config with ours
-install -D -m 644 %{_sourcedir}/mariadb/mysql.logrotate.conf '%{buildroot}'/etc/logrotate.d/mysql
+install -D -m 644 %{_sourcedir}/mysql.logrotate.conf '%{buildroot}'/etc/logrotate.d/mysql
 
 # Systemd
-install -D -m 755 %{_sourcedir}/mariadb/mysql-systemd-helper '%{buildroot}'%{_libexecdir}/mysql/mysql-systemd-helper
-install -D -m 755 %{_sourcedir}/mariadb/mariadb-wait-ready '%{buildroot}'%{_libexecdir}/mariadb-wait-ready
+install -D -m 755 %{_sourcedir}/mysql-systemd-helper '%{buildroot}'%{_libexecdir}/mysql/mysql-systemd-helper
+install -D -m 755 %{_sourcedir}/mariadb-wait-ready '%{buildroot}'%{_libexecdir}/mariadb-wait-ready
 sed -i 's|@MYSQLVER@|%{version}|' '%{buildroot}'%{_libexecdir}/mysql/mysql-systemd-helper
 # ln -sf service '%{buildroot}'%{_sbindir}/rcmysql
-install -D -m 644 %{_sourcedir}/mariadb/mariadb.service '%{buildroot}'/usr/lib/systemd/system/mariadb.service
-install -D -m 644 %{_sourcedir}/mariadb/mariadb.target '%{buildroot}'/usr/lib/systemd/system/mariadb.target
+install -D -m 644 %{_sourcedir}/mariadb.service '%{buildroot}'/usr/lib/systemd/system/mariadb.service
+install -D -m 644 %{_sourcedir}/mariadb.target '%{buildroot}'/usr/lib/systemd/system/mariadb.target
 
 %files
 %{_bindir}/my_print_defaults
