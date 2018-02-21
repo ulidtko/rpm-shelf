@@ -70,18 +70,18 @@ mkdir -vp %{buildroot}/var/lib/mysql/tmp
 mkdir -vp %{buildroot}/var/log/mysql
 
 # Package config
-install -D -m 644 %{_sourcedir}/my.cnf '%{buildroot}'/etc/my.cnf
+install -D -m 644 %{Source1} '%{buildroot}'/etc/my.cnf
 
 # Overwrite stock logrotate config with ours
-install -D -m 644 %{_sourcedir}/mysql.logrotate.conf '%{buildroot}'/etc/logrotate.d/mysql
+install -D -m 644 %{Source18} '%{buildroot}'/etc/logrotate.d/mysql
 
 # Systemd
-install -D -m 755 %{_sourcedir}/mysql-systemd-helper '%{buildroot}'%{_libexecdir}/mysql/mysql-systemd-helper
-install -D -m 755 %{_sourcedir}/mariadb-wait-ready '%{buildroot}'%{_libexecdir}/mariadb-wait-ready
+install -D -m 755 %{Source17} '%{buildroot}'%{_libexecdir}/mysql/mysql-systemd-helper
+install -D -m 755 %{Source50} '%{buildroot}'%{_libexecdir}/mariadb-wait-ready
 sed -i 's|@MYSQLVER@|%{version}|' '%{buildroot}'%{_libexecdir}/mysql/mysql-systemd-helper
 # ln -sf service '%{buildroot}'%{_sbindir}/rcmysql
-install -D -m 644 %{_sourcedir}/mariadb.service '%{buildroot}'/usr/lib/systemd/system/mariadb.service
-install -D -m 644 %{_sourcedir}/mariadb.target '%{buildroot}'/usr/lib/systemd/system/mariadb.target
+install -D -m 644 %{Source15} '%{buildroot}'/usr/lib/systemd/system/mariadb.service
+install -D -m 644 %{Source16} '%{buildroot}'/usr/lib/systemd/system/mariadb.target
 
 %files
 %{_bindir}/my_print_defaults
