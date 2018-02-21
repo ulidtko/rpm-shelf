@@ -2,26 +2,16 @@
 #-- https://circleci.com --#
 
 version: 2
+
+globals: &globals
+  working_directory: /tmp
+  docker:
+      - image: ulidtko/rpm-shelf-ci
+
 jobs:
   build:
-    docker:
-      - image: centos:7.3.1611
+    <<: *globals
     steps:
-      - run:
-          name: Install build-deps
-          command: |
-            yum --noplugins install -y \
-                rpmdevtools yum-utils \
-                golang git \
-                rubygems \
-                ;
-            yum clean all
-
-            export GOBIN=/usr/local/bin
-            go get github.com/tcnksm/ghr
-
-            gem install package_cloud
-
       - checkout
 
       - run:
@@ -34,6 +24,14 @@ jobs:
           command: rpmbuild --define "_topdir $PWD" -bs SPECS/upx.spec
 
       - run:
+          name: rpmbuild (binary)
+          command: |
+            rpmbuild --define "_topdir $PWD" --rebuild SPECS/upx-*.src.rpm
+
+  publish:
+    <<: *globals
+    steps:
+      - run:
           name: Publish to GitHub
           command: |
             ghr -t $GITHUB_TOKEN \
@@ -42,13 +40,17 @@ jobs:
                 -prerelease \
                 -replace \
                 0.1 SRPMS/
-
-      - run:
-          name: rpmbuild (binary)
-          command: |
-            rpmbuild --define "_topdir $PWD" --rebuild SPECS/upx-*.src.rpm
-
       - run:
           name: PackageCloud upload
           command: |
             package_cloud push rpm-shelf/main/el/7 RPMS/x86_64/upx-*.rpm
+
+workflows:
+  version: 2
+    all-there-is-to-it:
+      jobs:
+        - build
+        - publish:
+            requires:
+              build
+
