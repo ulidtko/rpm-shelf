@@ -12,6 +12,7 @@ RUN \
         rpmdevtools yum-utils \
         golang git \
         rubygems ruby-devel \
+        epel-release \
     && \
     yum --noplugins clean all \
     ; \
