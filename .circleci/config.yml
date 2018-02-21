@@ -20,13 +20,8 @@ jobs:
             (mkdir -p SOURCES; cd SOURCES; spectool -g ../SPECS/upx.spec)
 
       - run:
-          name: rpmbuild (source)
-          command: rpmbuild --define "_topdir $PWD" -bs SPECS/upx.spec
-
-      - run:
-          name: rpmbuild (binary)
-          command: |
-            rpmbuild --define "_topdir $PWD" --rebuild SPECS/upx-*.src.rpm
+          name: rpmbuild
+          command: rpmbuild --define "_topdir $PWD" -ba SPECS/upx.spec
 
   publish:
     <<: *globals
