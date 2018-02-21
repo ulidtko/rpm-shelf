@@ -4,7 +4,7 @@
 version: 2
 
 globals: &globals
-  working_directory: /tmp
+  working_directory: /tmp/build
   docker:
       - image: ulidtko/rpm-shelf-ci
 
