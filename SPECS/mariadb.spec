@@ -7,8 +7,7 @@ Group:          Applications/Databases
 
 License:        GPL2
 URL:            http://mariadb.org
-#Source0:        http://archive.mariadb.org/%{name}-%{version}/source/%{name}-%{version}.tar.gz
-Source0:        https://github.com/MariaDB/server/archive/%{name}-%{version}.tar.gz
+Source0:        http://archive.mariadb.org/%{name}-%{version}/source/%{name}-%{version}.tar.gz
 Source1:        mariadb/my.cnf
 Source15:       mariadb/mariadb.service
 Source16:       mariadb/mariadb.target
