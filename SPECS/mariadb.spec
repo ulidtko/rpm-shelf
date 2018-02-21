@@ -1,21 +1,22 @@
 Name:           mariadb
 Version:        10.1.14
 Epoch:          1
-Release:        VIS0.1
+Release:        VIS0.2
 Summary:        A community developed fork of MySQL
 Group:          Applications/Databases
 
 License:        GPL2
 URL:            http://mariadb.org
-Source0:        %{name}-%{version}.tar.gz
-Source1:        my.cnf
-Source15:       mariadb.service
-Source16:       mariadb.target
-Source17:       mysql-systemd-helper
-Source18:       mysql.logrotate.conf
-Source50:       mariadb-wait-ready
+#Source0:        http://archive.mariadb.org/%{name}-%{version}/source/%{name}-%{version}.tar.gz
+Source0:        https://github.com/MariaDB/server/archive/%{name}-%{version}.tar.gz
+Source1:        mariadb/my.cnf
+Source15:       mariadb/mariadb.service
+Source16:       mariadb/mariadb.target
+Source17:       mariadb/mysql-systemd-helper
+Source18:       mariadb/mysql.logrotate.conf
+Source50:       mariadb/mariadb-wait-ready
 
-BuildRequires:  jemalloc-devel, xz-devel, lzo-devel, readline-devel, libaio-devel
+BuildRequires:  jemalloc-devel, xz-devel, lzo-devel, readline-devel, libaio-devel, perl-Test-Simple
 AutoReq: on
 
 %description
@@ -178,7 +179,7 @@ Summary:  The MariaDB server and related files
 Group:    Development/Databases
 Requires: mariadb-libs = 1:%{version}-%{release}
 Requires: mariadb = 1:%{version}-%{release}
-Requires(pre): /sbin/useradd
+Requires(pre): shadow-utils
 
 %description server
 This package contains the mysqld server daemon, configuration, systemd service files and other support files for running the MariaDB server.
@@ -254,9 +255,10 @@ This package contains the mysqld server daemon, configuration, systemd service f
 /usr/lib/systemd/system/mariadb.target
 
 %pre server
-/usr/sbin/groupadd -g 27 -o -r mysql || echo "(that's OK)"
-/usr/sbin/useradd -M -N -g mysql -o -r -d /var/lib/mysql -s /bin/bash \
-	-c "MariaDB Server" -u 27 mysql || echo "(that's OK too)"
+getent group mysql >/dev/null || groupadd -g 27 -o -r mysql
+getent passwd mysql >/dev/null || \
+	useradd -M -N -g mysql -o -r -d /var/lib/mysql -s /bin/bash \
+	-c "MariaDB Server" -u 27 mysql
 
 %post server
 mkdir -p /var/run/mariadb
@@ -319,7 +321,10 @@ exit 0 #-- noclean
 
 
 %changelog
-* Tue Aug 16 2016 Maxim Ivanov <ulidtko@gmail.com> - 10.1.14-VIS0.1
+* Wed Jun 7 2017 Maxim Ivanov <ulidtko@gmail.com> 1:10.1.14-VIS0.2
+- Corrected dependency on shadow-utils, adjusted user adding code.
+
+* Tue Aug 16 2016 Maxim Ivanov <ulidtko@gmail.com>
 - Logrotate config corrected, logs locations adjusted
 
 * Wed Jun 15 2016 Maxim Ivanov <ulidtko@gmail.com>
