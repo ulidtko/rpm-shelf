@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/ulidtko/rpm-shelf.svg?style=svg&circle-token=5cbd95be6f7f4776743310365f197910bb447004)](https://circleci.com/gh/ulidtko/rpm-shelf)
+
 # ???
 
 1. [RHEL](https://redhat.com/rhel)
@@ -27,3 +29,6 @@ LMDTFY:
                                                                        thing.rpm
 
 And then, an installable RPM appears. Nice huh!
+
+# Binary RPM download
+https://packagecloud.io/rpm-shelf/main
