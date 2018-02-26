@@ -60,7 +60,9 @@ jobs:
           name: PackageCloud upload
           command: |
             cd RPMS/x86_64
-            package_cloud yank rpm-shelf/main/el/7 *.rpm
+            for p in *.rpm; do
+              package_cloud yank rpm-shelf/main/el/7 $p
+            done
             package_cloud push rpm-shelf/main/el/7 *.rpm
 
 workflows:
