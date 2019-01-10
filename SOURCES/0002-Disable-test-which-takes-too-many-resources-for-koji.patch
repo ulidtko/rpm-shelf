@@ -1,0 +1,26 @@
+From 0b06a4ddd8da8d7e6d0de78a0fd3facd0739fcba Mon Sep 17 00:00:00 2001
+From: Igor Gnatenko <i.gnatenko.brain@gmail.com>
+Date: Mon, 28 Nov 2016 20:01:20 +0100
+Subject: [PATCH 2/2] Disable test which takes too many resources for koji
+
+Signed-off-by: Igor Gnatenko <i.gnatenko.brain@gmail.com>
+---
+ src/subprocess_test.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/subprocess_test.cc b/src/subprocess_test.cc
+index 0a8c206..38dfd4a 100644
+--- a/src/subprocess_test.cc
++++ b/src/subprocess_test.cc
+@@ -214,7 +214,7 @@ TEST_F(SubprocessTest, SetWithMulti) {
+   }
+ }
+ 
+-#if defined(USE_PPOLL)
++#if 0 && defined(USE_PPOLL)
+ TEST_F(SubprocessTest, SetWithLots) {
+   // Arbitrary big number; needs to be over 1024 to confirm we're no longer
+   // hostage to pselect.
+-- 
+2.10.2
+
