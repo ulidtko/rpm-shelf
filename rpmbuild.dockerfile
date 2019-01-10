@@ -5,9 +5,9 @@ MAINTAINER Max <ulidtko@gmail.com>
 
 RUN yum --noplugins install -y \
     tree htop vim less \
-    gcc make \
-    rpmdevtools yum-utils \
-    sudo \
+    gcc make cmake \
+    rpmdevtools yum-utils rpmlint rpm-sign \
+    sudo bash-completion \
     ; yum clean all
 
 #-- Æ·S·T·H·E·T·I·C·S --
