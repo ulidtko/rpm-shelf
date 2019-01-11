@@ -61,7 +61,7 @@ jobs:
           command: |
             cd RPMS/x86_64
             for p in *.rpm; do
-              package_cloud yank rpm-shelf/main/el/7 $p
+              package_cloud yank rpm-shelf/main/el/7 $p || :
             done
             package_cloud push rpm-shelf/main/el/7 *.rpm
 
