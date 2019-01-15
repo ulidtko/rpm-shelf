@@ -1,4 +1,6 @@
-[![CircleCI](https://circleci.com/gh/ulidtko/rpm-shelf.svg?style=svg&circle-token=5cbd95be6f7f4776743310365f197910bb447004)](https://circleci.com/gh/ulidtko/rpm-shelf)
+[![PackageCloud.io](https://img.shields.io/badge/rpm-packagecloud.io-844fec.svg)](https://packagecloud.io/rpm-shelf/main)
+<!-- Disabled: CircleCI badge style doesn't blend [![CircleCI](https://circleci.com/gh/ulidtko/rpm-shelf.svg?style=svg&circle-token=5cbd95be6f7f4776743310365f197910bb447004)](https://circleci.com/gh/ulidtko/rpm-shelf) -->
+[![CircleCI](https://img.shields.io/circleci/token/37cb3ba63d9711b861d52a440e0712898e7fcf3a/project/github/ulidtko/rpm-shelf/master.svg?label=CircleCI%20build)](https://circleci.com/gh/ulidtko/rpm-shelf)
 
 # ???
 
