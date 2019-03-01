@@ -1,0 +1,12 @@
+diff --git i/runtime/bin/socket_patch.dart w/runtime/bin/socket_patch.dart
+index 6b3e4951f3..629d7cd2f1 100644
+--- i/runtime/bin/socket_patch.dart
++++ w/runtime/bin/socket_patch.dart
+@@ -445,6 +445,7 @@ class _NativeSocket extends _NativeSocketNativeWrapper with _ServiceObject {
+         final _InternetAddress address = it.current;
+         var socket = new _NativeSocket.normal();
+         socket.localAddress = address;
++        socket.localPort = port;
+         var result;
+         if (sourceAddress == null) {
+           result = socket.nativeCreateConnect(address._in_addr, port);
