@@ -11,6 +11,10 @@ globals: &globals
 jobs:
   build:
     <<: *globals
+
+    environment:
+      TAR_OPTIONS: --no-same-owner
+
     steps:
       - checkout
 
