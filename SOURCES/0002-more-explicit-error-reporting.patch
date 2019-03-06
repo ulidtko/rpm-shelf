@@ -1,0 +1,20 @@
+diff --git i/build/gn_run_binary.py w/build/gn_run_binary.py
+index f6f9bac0a6..3b3fe44ed8 100755
+--- i/build/gn_run_binary.py
++++ w/build/gn_run_binary.py
+@@ -24,11 +24,11 @@ def run_command(command):
+     subprocess.check_output(command, stderr=subprocess.STDOUT)
+     return 0
+   except subprocess.CalledProcessError as e:
+-    return ("Command failed: " + ' '.join(command) + "\n" +
+-            "output: " + e.output)
++    return "Command failed: %s\nEXIT CODE %d\nSTDOUT+STDERR: %r" % (
++            ' '.join(command), e.returncode, e.output)
+   except OSError as e:
+-    return ("Command failed: " + ' '.join(command) + "\n" +
+-            "output: " + e.strerror)
++    return "Command failed: %s\nWITH ERRNO %d (%s)" % (
++            ' '.join(command), e.errno, e.strerror)
+ 
+ def main(argv):
+   error_exit = 0

@@ -16,6 +16,7 @@ URL:     https://www.dartlang.org/
 # Source0: https://github.com/dart-lang/sdk/archive/%{upstream_version}.tar.gz#/dart-%{version}.tar.gz
 
 Patch1: 0001-Fix-wrong-port-in-Dart-SocketError-messages.patch
+Patch2: 0002-more-explicit-error-reporting.patch
 
 #-- Google depot_tools
 %define DEPOT_TOOLS_GIT https://chromium.googlesource.com/chromium/tools/depot_tools.git
@@ -44,6 +45,7 @@ mkdir -p dart-%{version} && cd dart-%{version}
 cd sdk
 gclient sync --no-history --revision %{upstream_version}
 %patch1 -p1
+%patch2 -p1
 
 %build
 export PATH="$PATH:$PWD/depot_tools"
