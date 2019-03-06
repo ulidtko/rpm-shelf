@@ -49,7 +49,7 @@ gclient sync --no-history --revision %{upstream_version}
 export PATH="$PATH:$PWD/depot_tools"
 cd dart-%{version}/sdk
 ./tools/build.py \
-    `: --verbose` \
+    --verbose \
     --mode release \
     --arch x64 \
     create_sdk
