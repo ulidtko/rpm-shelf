@@ -15,6 +15,7 @@ jobs:
     environment:
       TAR_OPTIONS: --no-same-owner
       DART_NUMBER_OF_CORES: 1
+      DART_NO_FULL_SDK: true
 
     steps:
       - checkout

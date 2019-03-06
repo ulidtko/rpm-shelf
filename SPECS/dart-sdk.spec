@@ -48,13 +48,20 @@ gclient sync --no-history --revision %{upstream_version}
 %patch2 -p1
 
 %build
+
+#-- workaround 4GiB OOM on CI (by ditching dart2js)
+if [[ ! -z $DART_NO_FULL_SDK ]]
+then TARGET=create_platform_sdk
+else TARGET=create_full_sdk
+fi
+
 export PATH="$PATH:$PWD/depot_tools"
 cd dart-%{version}/sdk
 ./tools/build.py \
     --verbose \
     --mode release \
     --arch x64 \
-    create_sdk
+    $TARGET
 
 %check
 echo 'The test suite takes ~10 hours -- uncomment in the .spec first'
